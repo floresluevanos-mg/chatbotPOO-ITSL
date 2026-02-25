@@ -768,6 +768,220 @@
     margin: 6px 0;
   }
   .error-msg { color: #e53e3e; font-size: .82rem; margin-top: 5px; }
+
+  /* =====================================================
+     PANEL DE AUTOR / ADMINISTRADOR
+     ===================================================== */
+  /* Botón flotante oculto en esquina inferior derecha */
+  #admin-fab {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(38,64,176,.12);
+    border: 1.5px solid rgba(58,91,219,.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: rgba(58,91,219,.4);
+    transition: all .2s;
+    z-index: 200;
+  }
+  #admin-fab:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(58,91,219,.4);
+  }
+
+  /* Modal overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,15,40,.55);
+    backdrop-filter: blur(4px);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; animation: fadeIn .25s ease; }
+
+  /* Modal de contraseña */
+  .modal-box {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 32px 30px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 14px; right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--text-muted);
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-icon { font-size: 2.2rem; text-align: center; margin-bottom: 10px; }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .modal-desc { font-size: .82rem; color: var(--text-muted); text-align: center; margin-bottom: 20px; }
+  .modal-input {
+    width: 100%;
+    padding: 11px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: .95rem;
+    outline: none;
+    background: var(--surface2);
+    transition: border-color .2s, box-shadow .2s;
+    margin-bottom: 12px;
+  }
+  .modal-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(58,91,219,.1);
+  }
+  .modal-error { color: #e53e3e; font-size: .8rem; margin-bottom: 10px; display: none; }
+
+  /* Panel de administrador */
+  .admin-panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 30px 28px;
+    width: 100%;
+    max-width: 780px;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .admin-panel::-webkit-scrollbar { width: 6px; }
+  .admin-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+  .admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .admin-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--primary);
+  }
+  .admin-subtitle { font-size: .78rem; color: var(--text-muted); margin-top: 2px; }
+
+  .admin-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .admin-stat {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-align: center;
+  }
+  .admin-stat-num {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .admin-stat-label { font-size: .72rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* Tabla de resultados */
+  .admin-table-wrap { overflow-x: auto; margin-bottom: 20px; }
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .8rem;
+  }
+  .admin-table th {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #fff;
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+    font-size: .74rem;
+    letter-spacing: .03em;
+  }
+  .admin-table th:first-child { border-radius: 8px 0 0 0; }
+  .admin-table th:last-child  { border-radius: 0 8px 0 0; }
+  .admin-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .admin-table tr:nth-child(even) td { background: var(--surface2); }
+  .admin-table tr:hover td { background: rgba(58,91,219,.05); }
+
+  .admin-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn-download {
+    padding: 11px 22px;
+    background: linear-gradient(135deg, var(--accent2), #00a87c);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .2s;
+    box-shadow: 0 3px 12px rgba(0,200,150,.3);
+  }
+  .btn-download:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0,200,150,.45); }
+  .btn-danger {
+    padding: 11px 22px;
+    background: #fff;
+    color: #e53e3e;
+    border: 1.5px solid #fca5a5;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: .9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+  }
+  .btn-danger:hover { background: #fff5f5; border-color: #e53e3e; }
+  .admin-empty {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-muted);
+    font-size: .9rem;
+  }
+
+  @media (max-width: 600px) {
+    .admin-stats { grid-template-columns: 1fr 1fr; }
+    .admin-panel { padding: 20px 16px; }
+  }
 </style>
 </head>
 <body>
@@ -905,6 +1119,76 @@
   </section>
 
 </main>
+
+<!-- ====================================================
+     BOTÓN FLOTANTE DE AUTOR (discreto, esquina inferior derecha)
+     ==================================================== -->
+<button id="admin-fab" title="Acceso autor" onclick="openAdminLogin()">🔑</button>
+
+<!-- ====================================================
+     MODAL: LOGIN DE AUTOR
+     ==================================================== -->
+<div class="modal-overlay" id="modal-login">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modal-login')">✕</button>
+    <div class="modal-icon">🔐</div>
+    <div class="modal-title">Acceso de Autor</div>
+    <div class="modal-desc">Ingresa la contraseña para ver y descargar los resultados acumulados.</div>
+    <input type="password" class="modal-input" id="admin-pass-input"
+           placeholder="Contraseña de autor"
+           onkeydown="if(event.key==='Enter') checkAdminPass()">
+    <div class="modal-error" id="admin-pass-error">⚠️ Contraseña incorrecta. Inténtalo de nuevo.</div>
+    <button class="btn-primary" onclick="checkAdminPass()">🔓 Ingresar</button>
+  </div>
+</div>
+
+<!-- ====================================================
+     MODAL: PANEL DE ADMINISTRADOR
+     ==================================================== -->
+<div class="modal-overlay" id="modal-admin">
+  <div class="admin-panel">
+    <div class="admin-header">
+      <div>
+        <div class="admin-title">📊 Panel de Autor — TutorPOO</div>
+        <div class="admin-subtitle">Dra. María Guadalupe Flores Luévanos · Resultados acumulados de alumnos</div>
+      </div>
+      <button class="modal-close" style="position:relative;top:auto;right:auto;" onclick="closeModal('modal-admin')">✕</button>
+    </div>
+
+    <!-- Estadísticas resumen -->
+    <div class="admin-stats" id="adminStats"></div>
+
+    <!-- Tabla de resultados -->
+    <div class="admin-table-wrap">
+      <table class="admin-table" id="adminTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>No. Control</th>
+            <th>Grupo</th>
+            <th>Quiz (pts)</th>
+            <th>Quiz (%)</th>
+            <th>BUS-11 Total</th>
+            <th>BUS-11 Prom.</th>
+            <th>Usabilidad</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody"></tbody>
+      </table>
+      <div class="admin-empty" id="adminEmpty" style="display:none">
+        📭 Aún no hay registros de alumnos almacenados.
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="admin-actions">
+      <button class="btn-download" onclick="downloadCSV()">⬇️ Descargar CSV completo</button>
+      <button class="btn-danger" onclick="clearAllRecords()">🗑️ Borrar todos los registros</button>
+    </div>
+  </div>
+</div>
 
 <!-- ====================================================
      JAVASCRIPT — LÓGICA COMPLETA
@@ -1545,12 +1829,25 @@ function showFinalResults(busTotal, busAvg) {
   goTo('final');
 
   const quizData = JSON.parse(localStorage.getItem('tutorpoo_quiz') || '{"score":0,"pct":0}');
-  const student = JSON.parse(localStorage.getItem('tutorpoo_student') || '{}');
+  const student  = JSON.parse(localStorage.getItem('tutorpoo_student') || '{}');
+  const now      = new Date();
+
+  // ── Guardar registro acumulativo ──────────────────────────
+  saveRecord({
+    nombre:    student.nombre  || APP.student.nombre,
+    control:   student.control || APP.student.control,
+    grupo:     student.grupo   || APP.student.grupo,
+    quizScore: quizData.score,
+    quizPct:   quizData.pct,
+    busTotal:  busTotal,
+    busAvg:    busAvg,
+    fecha:     now.toLocaleDateString('es-MX', {year:'numeric',month:'2-digit',day:'2-digit'}),
+    hora:      now.toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'})
+  });
 
   document.getElementById('finalSubtitle').innerHTML =
     `¡Felicidades, <strong>${student.nombre || APP.student.nombre}</strong>! Has completado exitosamente la sesión de aprendizaje sobre Introducción a Clases y Métodos en POO.`;
 
-  const now = new Date();
   document.getElementById('finalCert').innerHTML = `
     Este documento certifica que el/la estudiante <strong>${student.nombre}</strong>
     (No. de control: <strong>${student.control}</strong>, Grupo: <strong>${student.grupo}</strong>)
@@ -1580,10 +1877,222 @@ function showFinalResults(busTotal, busAvg) {
 }
 
 /* ============================================================
+   ALMACENAMIENTO ACUMULATIVO DE REGISTROS
+   ============================================================ */
+
+/** Clave en localStorage donde se guarda el arreglo de registros */
+const RECORDS_KEY = 'tutorpoo_records';
+
+/**
+ * Guarda un nuevo registro en el arreglo acumulativo.
+ * @param {Object} record - Datos del alumno + resultados
+ */
+function saveRecord(record) {
+  const records = getRecords();
+  record.id = records.length + 1;
+  records.push(record);
+  localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
+}
+
+/**
+ * Obtiene todos los registros almacenados.
+ * @returns {Array} Arreglo de registros
+ */
+function getRecords() {
+  try {
+    return JSON.parse(localStorage.getItem(RECORDS_KEY) || '[]');
+  } catch { return []; }
+}
+
+/* ============================================================
+   PANEL DE AUTOR — CONTRASEÑA Y MODAL
+   ============================================================ */
+
+/** Contraseña del autor (solo para uso local, no seguridad en producción) */
+const AUTHOR_PASSWORD = 'chatbotITSL';
+
+/** Abre el modal de login del autor */
+function openAdminLogin() {
+  document.getElementById('admin-pass-input').value = '';
+  document.getElementById('admin-pass-error').style.display = 'none';
+  document.getElementById('modal-login').classList.add('open');
+  setTimeout(() => document.getElementById('admin-pass-input').focus(), 200);
+}
+
+/** Verifica la contraseña ingresada */
+function checkAdminPass() {
+  const pass = document.getElementById('admin-pass-input').value;
+  if (pass === AUTHOR_PASSWORD) {
+    closeModal('modal-login');
+    openAdminPanel();
+  } else {
+    document.getElementById('admin-pass-error').style.display = 'block';
+    document.getElementById('admin-pass-input').value = '';
+    document.getElementById('admin-pass-input').focus();
+  }
+}
+
+/** Cierra un modal por su ID */
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+/** Abre el panel de administrador y carga los datos */
+function openAdminPanel() {
+  const records = getRecords();
+  renderAdminStats(records);
+  renderAdminTable(records);
+  document.getElementById('modal-admin').classList.add('open');
+}
+
+/** Renderiza las tarjetas de estadísticas resumen */
+function renderAdminStats(records) {
+  const total = records.length;
+  const avgQuiz = total
+    ? (records.reduce((s,r) => s + Number(r.quizScore), 0) / total).toFixed(1)
+    : 0;
+  const avgBus = total
+    ? (records.reduce((s,r) => s + Number(r.busAvg), 0) / total).toFixed(2)
+    : 0;
+
+  document.getElementById('adminStats').innerHTML = `
+    <div class="admin-stat">
+      <div class="admin-stat-num">${total}</div>
+      <div class="admin-stat-label">Alumnos registrados</div>
+    </div>
+    <div class="admin-stat">
+      <div class="admin-stat-num">${avgQuiz}<span style="font-size:.9rem;color:var(--text-muted)">/100</span></div>
+      <div class="admin-stat-label">Promedio Quiz (grupo)</div>
+    </div>
+    <div class="admin-stat">
+      <div class="admin-stat-num">${avgBus}<span style="font-size:.9rem;color:var(--text-muted)">/5</span></div>
+      <div class="admin-stat-label">Promedio BUS-11 (grupo)</div>
+    </div>`;
+}
+
+/** Renderiza la tabla de resultados de todos los alumnos */
+function renderAdminTable(records) {
+  const tbody  = document.getElementById('adminTableBody');
+  const empty  = document.getElementById('adminEmpty');
+  const table  = document.getElementById('adminTable');
+
+  if (!records.length) {
+    table.style.display  = 'none';
+    empty.style.display  = 'block';
+    return;
+  }
+  table.style.display = 'table';
+  empty.style.display = 'none';
+
+  tbody.innerHTML = records.map(r => {
+    const usab = r.busAvg >= 4.5 ? 'Excelente' :
+                 r.busAvg >= 3.5 ? 'Buena'     :
+                 r.busAvg >= 2.5 ? 'Regular'   : 'Baja';
+    return `<tr>
+      <td>${r.id}</td>
+      <td>${r.nombre}</td>
+      <td>${r.control}</td>
+      <td>${r.grupo}</td>
+      <td style="text-align:center;font-weight:700;color:var(--primary)">${r.quizScore}</td>
+      <td style="text-align:center">${r.quizPct}%</td>
+      <td style="text-align:center;font-weight:700">${r.busTotal}/55</td>
+      <td style="text-align:center">${r.busAvg}</td>
+      <td style="text-align:center">${usab}</td>
+      <td>${r.fecha} ${r.hora}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ============================================================
+   DESCARGA CSV
+   ============================================================ */
+
+/**
+ * Genera y descarga un archivo CSV con todos los registros acumulados.
+ * El CSV incluye encabezados y los datos de cada alumno.
+ */
+function downloadCSV() {
+  const records = getRecords();
+  if (!records.length) {
+    alert('No hay registros para descargar.');
+    return;
+  }
+
+  // Encabezado del CSV
+  const headers = [
+    'No.','Nombre','No. Control','Grupo',
+    'Quiz Puntaje','Quiz Porcentaje',
+    'BUS-11 Total','BUS-11 Promedio','Usabilidad',
+    'Fecha','Hora'
+  ];
+
+  // Filas de datos
+  const rows = records.map(r => {
+    const usab = r.busAvg >= 4.5 ? 'Excelente' :
+                 r.busAvg >= 3.5 ? 'Buena'     :
+                 r.busAvg >= 2.5 ? 'Regular'   : 'Baja';
+    // Escapar campos con comas usando comillas dobles
+    const esc = v => `"${String(v).replace(/"/g,'""')}"`;
+    return [
+      r.id, esc(r.nombre), esc(r.control), esc(r.grupo),
+      r.quizScore, r.quizPct + '%',
+      r.busTotal, r.busAvg, esc(usab),
+      esc(r.fecha), esc(r.hora)
+    ].join(',');
+  });
+
+  // Metadata al inicio del archivo para contexto
+  const meta = [
+    '"TutorPOO — Chatbot Educativo POO"',
+    '"Docente: Dra. María Guadalupe Flores Luévanos"',
+    `"Fecha de descarga: ${new Date().toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'})}"`,
+    '"Módulo: Introducción a Clases y Métodos en POO"',
+    ''
+  ].join('\n');
+
+  const csvContent = '\uFEFF' +        // BOM para compatibilidad con Excel
+    meta +
+    headers.join(',') + '\n' +
+    rows.join('\n');
+
+  // Crear enlace de descarga
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const now  = new Date();
+  const fname = `TutorPOO_Resultados_${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.csv`;
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Borra todos los registros del localStorage (con confirmación).
+ */
+function clearAllRecords() {
+  if (confirm('⚠️ ¿Estás seguro/a de que deseas eliminar TODOS los registros?\nEsta acción no se puede deshacer.')) {
+    localStorage.removeItem(RECORDS_KEY);
+    openAdminPanel(); // Recargar panel
+  }
+}
+
+/* ============================================================
    INICIALIZACIÓN
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   initProgressBar();
+
+  // Cerrar modales al hacer clic fuera del contenido
+  document.getElementById('modal-login').addEventListener('click', function(e) {
+    if (e.target === this) closeModal('modal-login');
+  });
+  document.getElementById('modal-admin').addEventListener('click', function(e) {
+    if (e.target === this) closeModal('modal-admin');
+  });
 });
 </script>
 </body>
