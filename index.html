@@ -483,7 +483,7 @@ function startChat() {
     APP.student[f] = v;
   });
   if (!ok) return;
-  localStorage.setItem('tutorpoo_student', JSON.stringify(APP.student));
+  try { localStorage.setItem('tutorpoo_student', JSON.stringify(APP.student)); } catch(e){}
   goTo('chat');
   initChat();
 }
@@ -771,7 +771,9 @@ function showQuizResult() {
             pct>=70?'👍 ¡Muy bien! Tienes buena comprensión.':
             pct>=50?'📚 Aprobado. Repasa algunos conceptos.':
                     '🔄 Necesitas repasar el material. ¡Tú puedes!';
-  localStorage.setItem('tutorpoo_quiz', JSON.stringify({score:APP.quizScore,pct}));
+  // Guardar en estado global Y en localStorage como respaldo
+  APP.quizFinal = { score: APP.quizScore, pct: pct };
+  try { localStorage.setItem('tutorpoo_quiz', JSON.stringify(APP.quizFinal)); } catch(e){}
   document.getElementById('quizBody').innerHTML=`
     <div class="quiz-result">
       <div class="result-score-circle" style="--pct:${pct}%">
@@ -832,51 +834,60 @@ function submitSurvey() {
   if (missing) { document.getElementById('surveyError').style.display='block'; return; }
   document.getElementById('surveyError').style.display='none';
   const total=Object.values(APP.surveyAnswers).reduce((a,b)=>a+b,0);
-  const avg=(total/BUS11.length).toFixed(2);
-  localStorage.setItem('tutorpoo_survey', JSON.stringify({total,avg}));
-  showFinalResults(total,avg);
+  const avg=parseFloat((total/BUS11.length).toFixed(2));
+  // Guardar en estado global Y en localStorage como respaldo
+  APP.surveyFinal = { total: total, avg: avg };
+  try { localStorage.setItem('tutorpoo_survey', JSON.stringify(APP.surveyFinal)); } catch(e){}
+  showFinalResults(total, avg);
 }
 
 /* =============================================================
    PANTALLA 5 — RESULTADO FINAL
    ============================================================= */
-function showFinalResults(busTotal,busAvg) {
+function showFinalResults(busTotal, busAvg) {
   goTo('final');
-  const qData  =JSON.parse(localStorage.getItem('tutorpoo_quiz')    ||'{"score":0,"pct":0}');
-  const student=JSON.parse(localStorage.getItem('tutorpoo_student') ||'{}');
-  const now=new Date();
+
+  // Leer desde APP (estado global, siempre disponible)
+  // Con fallback a localStorage y luego a 0 si no hay datos
+  const qFinal  = APP.quizFinal  || (() => { try { return JSON.parse(localStorage.getItem('tutorpoo_quiz')||'null'); } catch(e){return null;} })() || {score:0, pct:0};
+  const student = APP.student.nombre ? APP.student : (() => { try { return JSON.parse(localStorage.getItem('tutorpoo_student')||'{}'); } catch(e){return {};} })();
+  const now = new Date();
+
+  // Asegurar que busAvg sea número para comparaciones
+  const busAvgNum = parseFloat(busAvg);
 
   // ── GUARDAR REGISTRO ACUMULATIVO ──
   saveRecord({
-    nombre:    student.nombre   || APP.student.nombre,
-    control:   student.control  || APP.student.control,
-    grupo:     student.grupo    || APP.student.grupo,
-    quizScore: qData.score,
-    quizPct:   qData.pct,
+    nombre:    student.nombre  || '—',
+    control:   student.control || '—',
+    grupo:     student.grupo   || '—',
+    quizScore: qFinal.score,
+    quizPct:   qFinal.pct,
     busTotal:  busTotal,
-    busAvg:    busAvg,
+    busAvg:    busAvgNum.toFixed(2),
     fecha:     now.toLocaleDateString('es-MX',{year:'numeric',month:'2-digit',day:'2-digit'}),
     hora:      now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})
   });
 
   document.getElementById('finalSubtitle').innerHTML=
-    `¡Felicidades, <strong>${student.nombre}</strong>! Completaste el módulo de POO exitosamente.`;
+    `¡Felicidades, <strong>${student.nombre||'Estudiante'}</strong>! Completaste el módulo de POO exitosamente.`;
 
   document.getElementById('finalCert').innerHTML=`
-    Certifica que <strong>${student.nombre}</strong>
-    (No. control: <strong>${student.control}</strong>, Grupo: <strong>${student.grupo}</strong>)
+    Certifica que <strong>${student.nombre||'—'}</strong>
+    (No. control: <strong>${student.control||'—'}</strong>, Grupo: <strong>${student.grupo||'—'}</strong>)
     completó el módulo <strong>"Introducción a Clases y Métodos en POO"</strong>
     bajo la supervisión de la <strong>Dra. María Guadalupe Flores Luévanos</strong>.<br>
     Fecha: ${now.toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'})}`;
 
-  const ul=busAvg>=4.5?'Excelente 🌟':busAvg>=3.5?'Buena 👍':busAvg>=2.5?'Regular ⚠️':'Baja 🔄';
+  const ul = busAvgNum>=4.5?'Excelente 🌟':busAvgNum>=3.5?'Buena 👍':busAvgNum>=2.5?'Regular ⚠️':'Baja 🔄';
+
   document.getElementById('finalGrid').innerHTML=`
     <div class="final-stat">
-      <div class="final-stat-num">${qData.score}<span style="font-size:1rem;color:var(--text-muted)">/100</span></div>
+      <div class="final-stat-num">${qFinal.score}<span style="font-size:1rem;color:var(--text-muted)">/100</span></div>
       <div class="final-stat-label">Puntaje Quiz</div>
     </div>
     <div class="final-stat">
-      <div class="final-stat-num">${qData.pct}<span style="font-size:1rem;color:var(--text-muted)">%</span></div>
+      <div class="final-stat-num">${qFinal.pct}<span style="font-size:1rem;color:var(--text-muted)">%</span></div>
       <div class="final-stat-label">Porcentaje de aciertos</div>
     </div>
     <div class="final-stat">
@@ -884,27 +895,41 @@ function showFinalResults(busTotal,busAvg) {
       <div class="final-stat-label">BUS-11 Total</div>
     </div>
     <div class="final-stat">
-      <div class="final-stat-num">${busAvg}</div>
+      <div class="final-stat-num">${busAvgNum.toFixed(2)}</div>
       <div class="final-stat-label">BUS-11 Prom. · ${ul}</div>
     </div>`;
 }
 
 /* =============================================================
-   ALMACENAMIENTO ACUMULATIVO EN localStorage
+   ALMACENAMIENTO ACUMULATIVO
+   Usa localStorage + variable en memoria como fallback
+   para que funcione tanto en servidor como en file://
    ============================================================= */
 
-/** Recupera todos los registros guardados */
+// Variable en memoria: siempre disponible aunque localStorage falle
+let _memRecords = null;
+
+/** Recupera todos los registros (localStorage → memoria) */
 function getRecords() {
-  try { return JSON.parse(localStorage.getItem(RECORDS_KEY)||'[]'); }
-  catch { return []; }
+  // Si ya tenemos en memoria, usar eso
+  if (_memRecords !== null) return _memRecords;
+  // Intentar leer de localStorage
+  try {
+    const raw = localStorage.getItem(RECORDS_KEY);
+    _memRecords = raw ? JSON.parse(raw) : [];
+  } catch(e) {
+    _memRecords = [];
+  }
+  return _memRecords;
 }
 
-/** Agrega un registro nuevo al arreglo y lo persiste */
+/** Agrega un registro y persiste (localStorage + memoria) */
 function saveRecord(r) {
-  const list=getRecords();
-  r.id=list.length+1;
+  const list = getRecords();
+  r.id = list.length + 1;
   list.push(r);
-  localStorage.setItem(RECORDS_KEY, JSON.stringify(list));
+  _memRecords = list;
+  try { localStorage.setItem(RECORDS_KEY, JSON.stringify(list)); } catch(e){}
 }
 
 /* =============================================================
@@ -1047,7 +1072,8 @@ function downloadCSV() {
 /** Borra todos los registros con confirmación previa */
 function clearAllRecords() {
   if (!confirm('⚠️ ¿Eliminar TODOS los registros almacenados?\nEsta acción no puede deshacerse.')) return;
-  localStorage.removeItem(RECORDS_KEY);
+  _memRecords = [];
+  try { localStorage.removeItem(RECORDS_KEY); } catch(e){}
   openAdminPanel();
 }
 
